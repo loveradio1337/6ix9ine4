@@ -167,7 +167,7 @@ async def repeat(ctx, times: int,*, content : str):
 
 @bot.event
 async on message(message)
-    await bot.process_commands(message)
+  await bot.process_commands(message)
  
 
                        
