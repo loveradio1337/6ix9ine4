@@ -5,15 +5,15 @@ from motor.motor_asyncio import AsyncIOMotorClient
 
 async def getprefix(bot, message):
     if isinstance(message.channel, discord.DMChannel):
-        return commands.when_mentioned_or("-")(bot, message)
+        return commands.when_mentioned_or(">")(bot, message)
     try:
         x = await bot.db.prefixes.find_one({ "id": message.guild.id })
         if not x:
-            return commands.when_mentioned_or("-")(bot, message)
+            return commands.when_mentioned_or(">")(bot, message)
         prefix = x['prefix']
         return commands.when_mentioned_or(prefix)(bot, message)
     except:
-        return commands.when_mentioned_or("-")(bot, message)
+        return commands.when_mentioned_or(">")(bot, message)
 
 bot = commands.Bot(command_prefix=getprefix)
 bot.session = aiohttp.ClientSession(loop=bot.loop)                       
@@ -46,7 +46,7 @@ async def on_command_error(message, error):
 async def on_ready():
     print('Bot is online, and ready to ROLL!')
     while True:
-        await bot.change_presence(activity=discord.Game(name=f"-help"))
+        await bot.change_presence(activity=discord.Game(name=f">help"))
         await asyncio.sleep(10)
         await bot.change_presence(activity=discord.Game(name=f"with ma god Vilgot"))
         await asyncio.sleep(10)
@@ -93,14 +93,13 @@ async def help(ctx, cmd: str = None):
         embed.add_field(name="Moderation", value="`welcome`, `leave`, `welcomeimage`, `modlog`, `lockdown`, `autorole`, `kick`, `ban`, `purge`, `warn`, `mute`, `unmute`", inline=False)
         embed.add_field(name="Giveaway", value="`start`", inline=False)
         embed.add_field(name="Utility", value="`8ball`, `serverinfo`, `userinfo`, `ping`, `prefix`, `avatar`", inline=False)
-        embed.set_footer(text="I´m a very new bot and in early development, there will come A LOT more commands!")
         await ctx.send(embed=embed)
     if cmd:
         x = bot.get_command(cmd)
         y = await bot.db.prefixes.find_one({ "id": ctx.guild.id })
         if not y:
-            return await ctx.send(f"```fix\n- {cmd} -\n= {x.help}\nUsage: -{x.signature}```")
-        await ctx.send(f"```fix\n- {cmd} -\n = {x.help}\nUsage: {y['prefix']}{x.signature}```")
+            return await ctx.send(f"```fix\n> {cmd} >\n= {x.help}\nUsage: >{x.signature}```")
+        await ctx.send(f"```fix\n> {cmd} >\n = {x.help}\nUsage: {y['prefix']}{x.signature}```")
     elif command is None:
         await ctx.send("That command doesnt exist!")
 
@@ -165,6 +164,11 @@ async def repeat(ctx, times: int,*, content : str):
     #if reactions[0].count > 3:
         #embed=discord.Embed(title="Suggestion got over 3 votes!", description=payload.message.content)
         #await vilgot_id.send(embed=embed)
+
+@bot.event
+async on message(message)
+    await bot.process_commands(message)
+ 
 
                        
 db = AsyncIOMotorClient(os.environ.get("MONGODB"))
