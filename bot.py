@@ -164,10 +164,6 @@ async def repeat(ctx, times: int,*, content : str):
     #if reactions[0].count > 3:
         #embed=discord.Embed(title="Suggestion got over 3 votes!", description=payload.message.content)
         #await vilgot_id.send(embed=embed)
-
-@bot.event
-async on message(message)
-  await bot.process_commands(message)
  
 
                        
